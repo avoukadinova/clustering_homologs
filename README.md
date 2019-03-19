@@ -1,4 +1,3 @@
-
 # Clustering Homologs
 ## By Adelina Voukadinova, Brian Ho, Athina Gerodias
 ### Overview
@@ -44,7 +43,7 @@ Week 2
 - [x] Finalize the project and select clustering algorithms
 - [x] Come up with an algorithm name
 - [x] Start programming the skeleton of the project 
-- [x] Finish presentation #1
+- [ ] Finish presentation #1
 - [ ] Finish GitHub repo #1
 
 Week 3
