@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import argparse
 import sys
+import os
+import Bio
 
 def get_args():
    argparser = argparse.ArgumentParser()
@@ -10,18 +12,34 @@ def get_args():
    argparser.add_argument("-msl", "--minseqlen", type = int, help = "Throw out any input sequences that are below the minimum sequence length")   
  
    args = argparser.parse_args()
+
    if not args.output:
       args.output = 'output_'+args.input
 
    return args
 
+def randomize_input(input_data):
+   print("TODO! Function for randomizing the input file!")
+   print("TODO! Import Biopython and parse fasta input")
+
+def run_usearch(t, filename):
+   t = str(t)
+   os.system(str("usearch -cluster_fast " + filename + " -centroids centroids.txt -clusters cluster -id " + t))
+
+def clust_homo():
+   print("TODO! Re-clustering using our own clustering algorithm.")
+
 def main():
    args = get_args()
    
-   f = open(args.input).read
-   
-   print("The input file name is " + args.input)
-   print("The output file name is " + args.output)
+   file = open(args.input).read()
+
+   filename_input = randomize_input(file)
+   filename_input = "metap2_homologs.txt"
+
+   run_usearch(args.threshold, filename_input)
+
+   clust_homo()
 
 if __name__ == "__main__":
    main()
