@@ -80,7 +80,7 @@ def abundance_and_length(filename, t):
     #delete centroids.txt to save space too?   
     handle.close()
     
-    sort_by_length('sorted_abundance.txt')
+    sort_by_length('sorted_abundance.txt', t)
 
 #def run_usearch(t, filename):
  #  t = str(t)
