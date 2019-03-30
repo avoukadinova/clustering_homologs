@@ -43,8 +43,8 @@ Week 2
 - [x] Finalize the project and select clustering algorithms
 - [x] Come up with an algorithm name
 - [x] Start programming the skeleton of the project 
-- [ ] Finish presentation #1
-- [ ] Finish GitHub repo #1
+- [x] Finish presentation #1
+- [x] Finish GitHub repo #1
 
 Week 3
 - [ ] Have a working prototype for the project (does not have to look good)
