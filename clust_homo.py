@@ -18,13 +18,73 @@ def get_args():
 
    return args
 
-def randomize_input(input_data):
-   print("TODO! Function for randomizing the input file!")
-   print("TODO! Import Biopython and parse fasta input")
+# to sort by abundance
+def sort_by_abundance(filename, t):
+    cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt'
+    os.system(cmd)
+    
+    handle=open('centroids.txt').read()
+    centroid_count = handle.count('>')
+    
+    clusters=[]
+    for x in range(centroid_count):
+        cluster = open('cluster'+str(x)).read()
+        freq = cluster.count('>')
+        clusters.append([freq, 'cluster'+str(x)])
+    
+    clusters.sort(key = lambda tup: tup[0], reverse=True)
+    
+    handle = open('sorted_abundance.txt','a')
+    
+    for cluster in clusters:
+        name = cluster[1]
+        temp = open(name).read()
+        #delete name to save space i.e. os.system('rm '+name)
+        handle.write(temp)
+    
+    #delete centroids.txt to save space too?   
+    handle.close()
+    
+    cmd = 'usearch -cluster_fast sorted_abundance.txt -id '+str(t)+' -clusters cluster -centroids centroids.txt'
+    os.system(cmd)    
 
-def run_usearch(t, filename):
-   t = str(t)
-   os.system(str("usearch -cluster_fast " + filename + " -centroids centroids.txt -clusters cluster -id " + t))
+#to sort by length
+def sort_by_length(filename, t):
+    cmd = 'usearch -cluster_fast '+filename+' -id '+str(t)+' -clusters cluster -centroids centroids.txt -sort length'
+    os.system(cmd)
+
+#to sort by abundance and length
+def abundance_and_length(filename, t):
+    cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt'
+    os.system(cmd)
+    
+    handle=open('centroids.txt').read()
+    centroid_count = handle.count('>')
+    
+    clusters=[]
+    for x in range(centroid_count):
+        cluster = open('cluster'+str(x)).read()
+        freq = cluster.count('>')
+        clusters.append([freq, 'cluster'+str(x)])
+    
+    clusters.sort(key = lambda tup: tup[0], reverse=True)
+    
+    handle = open('sorted_abundance.txt','a')
+    
+    for cluster in clusters:
+        name = cluster[1]
+        temp = open(name).read()
+        #delete name to save space i.e. os.system('rm '+name)
+        handle.write(temp)
+    
+    #delete centroids.txt to save space too?   
+    handle.close()
+    
+    sort_by_length('sorted_abundance.txt', t)
+
+#def run_usearch(t, filename):
+ #  t = str(t)
+  # os.system(str("usearch -cluster_fast " + filename + " -centroids centroids.txt -clusters cluster -id " + t))
 
 def clust_homo():
    print("TODO! Re-clustering using our own clustering algorithm.")
@@ -33,11 +93,19 @@ def main():
    args = get_args()
    
    file = open(args.input).read()
-
-   filename_input = randomize_input(file)
+   
    filename_input = "metap2_homologs.txt"
 
-   run_usearch(args.threshold, filename_input)
+   #run_usearch(args.threshold, filename_input)
+   
+   ##if you want to do UCLUST by decreasing length:
+      ##do sort_by_length
+      
+   ##if you want to do UCLUST by abundance:
+      ##do sort_by_abundance
+   
+   ##if you want to do UCLUST by both:
+      ##do abundance_and_length
 
    clust_homo()
 
