@@ -1,24 +1,33 @@
 #!/usr/bin/env python3
+
+#Import libraries
 import argparse
 import sys
 import os
 import Bio
 
+#Function used to grab the flags
 def get_args():
+   
+   #Define all the flags
    argparser = argparse.ArgumentParser()
-   argparser.add_argument("-i", "--input", required = True, help = "Input file name is required!")
-   argparser.add_argument("-t", "--threshold", type = float, default = 0.5, help = "The minimum threshold desired for clustering the input sequences")
+   argparser.add_argument("-i", "--input", required = True, help = "Input file name is required! Input file must be in fasta format.")
+   argparser.add_argument("-t", "--threshold", type = float, default = 0.5, help = "The minimum threshold desired when clustering the input sequences")
    argparser.add_argument("-o", "--output", type = str, help = "Output file name to which the results are written to")
-   argparser.add_argument("-msl", "--minseqlen", type = int, help = "Throw out any input sequences that are below the minimum sequence length")   
- 
+   argparser.add_argument("-m", "--minseqlen", type = int, help = "Throw out any input sequences that are below the minimum sequence length")   
+   argparser.add_argument("-s", "--sort", type = int, default = 3,  help = "Select 1 to sort the input file in decreasing sequence length, 2 to sort by decreasing abundance, and 3 to sort by both")
+   
    args = argparser.parse_args()
 
+   # If an output filename is not specified
    if not args.output:
+
+      # Assign a generic output name
       args.output = 'output_'+args.input
 
    return args
 
-# to sort by abundance
+#Function for sorting by abundance
 def sort_by_abundance(filename, t):
     cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt'
     os.system(cmd)
@@ -39,21 +48,22 @@ def sort_by_abundance(filename, t):
     for cluster in clusters:
         name = cluster[1]
         temp = open(name).read()
-        #delete name to save space i.e. os.system('rm '+name)
+
+        # Delete name to save space i.e. os.system('rm '+name)
         handle.write(temp)
     
-    #delete centroids.txt to save space too?   
+    # Delete centroids.txt to save space too?   
     handle.close()
     
     cmd = 'usearch -cluster_fast sorted_abundance.txt -id '+str(t)+' -clusters cluster -centroids centroids.txt'
     os.system(cmd)    
 
-#to sort by length
+# Function for sorting by length
 def sort_by_length(filename, t):
     cmd = 'usearch -cluster_fast '+filename+' -id '+str(t)+' -clusters cluster -centroids centroids.txt -sort length'
     os.system(cmd)
 
-#to sort by abundance and length
+# Function for sorting by abundance and length
 def abundance_and_length(filename, t):
     cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt'
     os.system(cmd)
@@ -74,17 +84,14 @@ def abundance_and_length(filename, t):
     for cluster in clusters:
         name = cluster[1]
         temp = open(name).read()
-        #delete name to save space i.e. os.system('rm '+name)
+        
+        #Delete name to save space i.e. os.system('rm '+name)
         handle.write(temp)
     
-    #delete centroids.txt to save space too?   
+    #Delete centroids.txt to save space too?   
     handle.close()
     
     sort_by_length('sorted_abundance.txt', t)
-
-#def run_usearch(t, filename):
- #  t = str(t)
-  # os.system(str("usearch -cluster_fast " + filename + " -centroids centroids.txt -clusters cluster -id " + t))
 
 def clust_homo():
    print("TODO! Re-clustering using our own clustering algorithm.")
@@ -95,17 +102,16 @@ def main():
    file = open(args.input).read()
    
    filename_input = "metap2_homologs.txt"
+   t = args.threshold
 
-   #run_usearch(args.threshold, filename_input)
-   
-   ##if you want to do UCLUST by decreasing length:
-      ##do sort_by_length
+   if args.sort == 1:
+      sort_by_length(filename_input, t)
       
-   ##if you want to do UCLUST by abundance:
-      ##do sort_by_abundance
+   elif args.sort == 2:
+      sort_by_abundance(filename_input, t)
    
-   ##if you want to do UCLUST by both:
-      ##do abundance_and_length
+   else:
+      abundance_and_length(filename_input, t)
 
    clust_homo()
 
