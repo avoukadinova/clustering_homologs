@@ -82,10 +82,6 @@ def abundance_and_length(filename, t):
     
     sort_by_length('sorted_abundance.txt', t)
 
-#def run_usearch(t, filename):
- #  t = str(t)
-  # os.system(str("usearch -cluster_fast " + filename + " -centroids centroids.txt -clusters cluster -id " + t))
-
 def clust_homo():
    print("TODO! Re-clustering using our own clustering algorithm.")
 
@@ -94,18 +90,7 @@ def main():
    
    file = open(args.input).read()
    
-   filename_input = "metap2_homologs.txt"
 
-   #run_usearch(args.threshold, filename_input)
-   
-   ##if you want to do UCLUST by decreasing length:
-      ##do sort_by_length
-      
-   ##if you want to do UCLUST by abundance:
-      ##do sort_by_abundance
-   
-   ##if you want to do UCLUST by both:
-      ##do abundance_and_length
 
    clust_homo()
 
