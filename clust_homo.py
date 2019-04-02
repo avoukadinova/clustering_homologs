@@ -39,10 +39,10 @@ def sort_by_abundance(filename, t):
     for cluster in clusters:
         name = cluster[1]
         temp = open(name).read()
-        #delete name to save space i.e. os.system('rm '+name)
         handle.write(temp)
     
-    #delete centroids.txt to save space too?   
+    os.system('rm cluster*')
+    os.system('rm centroids.txt')
     handle.close()
     
     cmd = 'usearch -cluster_fast sorted_abundance.txt -id '+str(t)+' -clusters cluster -centroids centroids.txt'
@@ -74,10 +74,10 @@ def abundance_and_length(filename, t):
     for cluster in clusters:
         name = cluster[1]
         temp = open(name).read()
-        #delete name to save space i.e. os.system('rm '+name)
         handle.write(temp)
     
-    #delete centroids.txt to save space too?   
+    os.system('rm cluster*')
+    os.system('rm centroids.txt')
     handle.close()
     
     sort_by_length('sorted_abundance.txt', t)
