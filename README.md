@@ -1,9 +1,3 @@
----
-title: "Installing clust_horo"
-output:
-  pdf_document: default
-  html_document: default
----
 
 ## A) Overview
 
