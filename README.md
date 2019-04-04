@@ -1,30 +1,28 @@
 
 ## A) Overview
 
-For the clust_horo algorithm to work, Biopython and USEARCH must be installed on your machine. A path to USEARCH must be added to your local bin so that USEARCH can be run from anywhere on your machine. Please follow ALL of the installation instructions below to ensure clust_horo works with no errors or issues. It should be noted that clust_horo is an executable, so all work is done through the command line. The instructions below will not work from the Windows Command Prompt.
+For the clust_horo algorithm to work, Biopython and USEARCH must be installed on your machine. A path to USEARCH must be added to your local bin so that USEARCH can be run from anywhere. Please follow ALL of the installation instructions below to ensure clust_horo works with no errors or issues. It should be noted that clust_horo is an executable, so all work is done through the command line. The instructions below will not work from the Windows Command Prompt.
 
 ## B) Installing Biopython
 
 For Biopython to be installed, you must first have Python installed. As there are many ways to do this, we leave it up to you to figure out. 
-
-### Linux and MAC  
   
 ```{r eval=FALSE,echo=TRUE}
 pip install biopython
 ```
 
-If this doesn't work for you, you can try other options for installing Biopython here: <http://biopython.org/DIST/docs/install/Installation.html>
+If this doesn't work for you, other options for installing Biopython can be found here: <http://biopython.org/DIST/docs/install/Installation.html>
 
 ## C) Installing USEARCH
 
 ### 1) Download USEARCH
 
-Please visit <https://www.drive5.com/usearch/download.html> and choose to download USEARCH for your specific operating system. From there, you will get an email from Robert Edgar with a link. Click on this link. USEARCH will download automatically. The file that is downloaded is an executable, so you cannot open it or click on it!
+Please visit <https://www.drive5.com/usearch/download.html> and choose your specific operating system. From there, you will get an email from Robert Edgar with a link. Click on this link. USEARCH will download automatically. The file that is downloaded is an executable, so you cannot open it or click on it!
 
 ### 2) Move the executable to your desired directory
 
-Let's say the file I just downloaded is in my downloads folder (for the sake of these instructions, let's say the path is /Users/Name/Downloads/). Move the executable to your desired location where you want it to permanently be. You can do this by clicking and dragging or through the command line.
-Let's say I want to move this file to a folder named USEARCH (with this path: /Users/Name/Desktop/USEARCH/). The following command will do that.  
+Let's say the file I just downloaded is in my downloads folder (for the sake of these instructions, let's say the path is /Users/Name/Downloads/). Move the executable to your desired location where you want it to permanently be. This can be done by clicking and dragging or through the command line.
+Let's say I want to move this file to a folder named USEARCH (path: /Users/Name/Desktop/USEARCH/). Run the following command.
   
   
 ```{r eval=FALSE,echo=TRUE}
@@ -33,7 +31,7 @@ mv /Users/Name/Downloads/usearch11.0.667_i86osx32 /Users/Name/Desktop/USEARCH
   
 ### 3) Go into the USEARCH directory  
 
-From here on out, everything is through the command line. Go into the directory where you just moved your executable to.    
+From here on out, everything is done through the command line. Go into the directory where you just moved your executable to.    
   
   
 ```{r eval=FALSE,echo=TRUE}
@@ -58,8 +56,14 @@ Create a path to USEARCH in your local bin. You will be prompted to input your p
 sudo ln -s /Users/Name/Desktop/USEARCH/usearch11.0.667_i86osx32 /usr/local/bin/usearch/
 ```
 
-You can now run USEARCH from anywhere on your machine!! If this did not work, USEARCH installation instructions can be found here: <https://www.drive5.com/usearch/>
-  
+You can now run USEARCH from anywhere on your machine!! If this did not work, USEARCH installation instructions can be found here: <https://www.drive5.com/usearch/>. An example of a USEARCH command you can run is
+
+```{r eval=FALSE,echo=TRUE}
+usearch -cluster_fast input_seq.fasta -id 0.8 -centroids centroid.txt -clusters cluster.txt
+``` 
+
+USEARCH documentation can be found here: <https://www.drive5.com/usearch/manual/>
+
 ## D) Downloading clust_horo  
   
 The clust_horo algorithm can be found here: <https://github.com/avoukadinova/clustering_homologs/>
