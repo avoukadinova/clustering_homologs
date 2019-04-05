@@ -1,6 +1,10 @@
 
 ## A) Overview
 
+When given a plethora of gene sequences (to be exact, over 100,000) from various organisms, the mere idea of determining which sequences are most similar can make one’s head (and computer) crash. Comparative biology and the ability to recognize homologous (similar in position, structure, and evolutionary origin but not necessarily in function) genes (i.e., homologs) is crucial to genome annotation, protein structure, and phylogenetics. This large set of next-generation sequencing data requires high-speed, efficient, and convenient bioinformatics algorithms to accurately execute clustering sequences. 
+
+The current standard to clustering homologs is USEARCH due to its impecable run time. Although faster, USEARCH often fails to cluster sequences that are actually homologous due to the nature of the algorithm. Our solution to USEARCH is an executable algorithm called clust_horo that retains the desired “fast” speed of USEARCH, but also removes the bias and iteratively performs clustering on the UCLUST output to produce a more accurate homolog clustering of the data, thus removing any unnecessary clusters. Effectively, clust_horo is still able to handle large data sets of 80,000 to 200,000 gene sequences while maintaining a relatively low run time.
+
 For the clust_horo algorithm to work, Biopython and USEARCH must be installed on your machine. A path to USEARCH must be added to your local bin so that USEARCH can be run from anywhere. Please follow ALL of the installation instructions below to ensure clust_horo works with no errors or issues. It should be noted that clust_horo is an executable, so all work is done through the command line. The instructions below will not work from the Windows Command Prompt.
 
 ## B) Installing Biopython
@@ -69,5 +73,23 @@ USEARCH documentation can be found here: <https://www.drive5.com/usearch/manual/
 The clust_horo algorithm can be found here: <https://github.com/avoukadinova/clustering_homologs/>
 
 ## E) Running clust_horo
+
+Once you have downloaded clust_horo, go into the directory where the executable is. To run it, one of two commands should work.
+
+```{r eval=FALSE,echo=TRUE}
+./clust_horo.py -i inputseq.fasta -t 0.6 -m 10
+``` 
+
+or
+
+```{r eval=FALSE,echo=TRUE}
+python3 clust_horo.py -i inputseq.fasta -t 0.6 -m 10
+``` 
+For a list of all the flag parameters, run the following command. 
+
+```{r eval=FALSE,echo=TRUE}
+./clust_horo.py -h
+```
+
 
 
