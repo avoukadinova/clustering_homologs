@@ -67,3 +67,7 @@ USEARCH documentation can be found here: <https://www.drive5.com/usearch/manual/
 ## D) Downloading clust_horo  
   
 The clust_horo algorithm can be found here: <https://github.com/avoukadinova/clustering_homologs/>
+
+## E) Running clust_horo
+
+
