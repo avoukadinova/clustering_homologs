@@ -98,6 +98,11 @@ def abundance_and_length(filename, t, minseqlen):
     
     sort_by_length('sorted_abundance.txt', t, minseqlen)
 
+def move_files():
+   os.system("mkdir ./USEARCH")
+   os.system("mv ./cluster* ./USEARCH/")
+   os.system("mv ./centroids.txt ./USEARCH/")
+
 def clust_homo():
    file = open("centroids.txt")
    data = file.read()
@@ -123,6 +128,7 @@ def main():
    else:
       abundance_and_length(filename_input, t, minseqlen)
 
+   move_files()
    clust_homo()
 
 if __name__ == "__main__":
