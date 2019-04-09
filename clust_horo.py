@@ -53,15 +53,16 @@ def sort_by_abundance(filename, t, minseqlen):
     for cluster in clusters:
         name = cluster[1]
         temp = open(name).read()
-
-        # Delete name to save space i.e. os.system('rm '+name)
         handle.write(temp)
     
-    # Delete centroids.txt to save space too?   
+    os.system('rm cluster*')
+    os.system('rm centroids.txt')
     handle.close()
     
     cmd = 'usearch -cluster_fast sorted_abundance.txt -id '+str(t)+' -clusters cluster -centroids centroids.txt -minseqlength ' + str(minseqlen)
     os.system(cmd)    
+    #os.system('rm sorted_abundance.txt')
+
 
 # Function for sorting by length
 def sort_by_length(filename, t, minseqlen):
@@ -88,15 +89,15 @@ def abundance_and_length(filename, t, minseqlen):
     
     for cluster in clusters:
         name = cluster[1]
-        temp = open(name).read()
-        
-        #Delete name to save space i.e. os.system('rm '+name)
+        temp = open(name).read()        
         handle.write(temp)
     
-    #Delete centroids.txt to save space too?   
+    os.system('rm cluster*')
+    os.system('rm centroids.txt')
     handle.close()
     
     sort_by_length('sorted_abundance.txt', t, minseqlen)
+    #os.system('rm sorted_abundance.txt')
 
 def move_files():
    os.system("mkdir ./USEARCH")
