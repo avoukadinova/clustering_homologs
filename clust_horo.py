@@ -33,7 +33,13 @@ def get_args():
    return args
 
 #Function for running cluster_fast without any sorting
-def sort_default(filename, t, minseqlen):
+def sort_default(filename, t, minseqlen, p):
+
+   t2 = time.time()
+
+   cmd = 'usearch -cluster_fast '+ filename + ' -id ' +str(t)+ ' -clusters cluster -centroids centroids.txt -minseqlength ' +str(minseqlen) + ' -threads ' + str(p)
+   os.system(cmd)
+
 
    #Used as the initial time for USEARCH run time
    t2 = time.time()
@@ -47,8 +53,10 @@ def sort_default(filename, t, minseqlen):
    print("USEARCH run time: " + str(t3-t2) + " seconds")
 
 #Function for sorting by abundance
-def sort_by_abundance(filename, t, minseqlen):
-    cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt'
+def sort_by_abundance(filename, t, minseqlen, p):
+
+    cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt -threads ' + str(p)
+
     os.system(cmd)
     
     handle=open('centroids.txt').read()
@@ -75,7 +83,9 @@ def sort_by_abundance(filename, t, minseqlen):
 
     t2 = time.time()
     
-    cmd = 'usearch -cluster_fast sorted_abundance.txt -id '+str(t)+' -clusters cluster -centroids centroids.txt -minseqlength ' + str(minseqlen)
+
+    cmd = 'usearch -cluster_fast sorted_abundance.txt -id '+str(t)+' -clusters cluster -centroids centroids.txt -minseqlength ' + str(minseqlen) + ' -threads ' + str(p)
+
     os.system(cmd)    
 
     t3 = time.time()
@@ -83,10 +93,10 @@ def sort_by_abundance(filename, t, minseqlen):
     print("USEARCH run time: " + str(t3-t2) + " seconds.")
 
 # Function for sorting by length
-def sort_by_length(filename, t, minseqlen):
+def sort_by_length(filename, t, minseqlen, p):
     t2 = time.time()
 
-    cmd = 'usearch -cluster_fast '+filename+' -id '+str(t)+' -clusters cluster -centroids centroids.txt -sort length -minseqlength ' + str(minseqlen)
+    cmd = 'usearch -cluster_fast '+filename+' -id '+str(t)+' -clusters cluster -centroids centroids.txt -sort length -minseqlength ' + str(minseqlen) + ' -threads ' + str(p)
     os.system(cmd)
     
     t3 = time.time()
@@ -94,8 +104,9 @@ def sort_by_length(filename, t, minseqlen):
     print("USEARCH run time: " + str(t3-t2) + " seconds.")
 
 # Function for sorting by abundance and length
-def abundance_and_length(filename, t, minseqlen):
-    cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt -minseqlength ' + str(minseqlen)
+def abundance_and_length(filename, t, minseqlen, p):
+
+    cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt -minseqlength ' + str(minseqlen) + ' -threads ' + str(p)
     os.system(cmd)
     
     handle=open('centroids.txt').read()
@@ -122,6 +133,103 @@ def abundance_and_length(filename, t, minseqlen):
     
     sort_by_length('sorted_abundance.txt', t, minseqlen)
 
+
+def move_files():
+
+   if os.path.isdir("./USEARCH") != 1:
+       os.system("mkdir ./USEARCH")
+   
+   os.system("mv ./cluster* ./USEARCH/")
+   os.system("mv ./centroids.txt ./USEARCH/")
+
+   if os.path.exists("./sorted_abundance.txt") == 1:
+       os.system("rm sorted_abundance.txt
+                 
+#def cluster_compare(i, j):
+#   cluster1 = []
+#   cluster2 = []
+               
+#   for record in SeqIO.parse("./USEARCH/cluster" + str(i), "fasta"):
+#       cluster1.append(record.seq)
+                 
+#   for record in SeqIO.parse("./USEARCH/cluster" + str(j), "fasta"):
+#       cluster2.append(record.seq)
+                 
+#   for sequence1 in cluster1:
+#      for sequence2 in cluster2:
+
+#           s1 = split_seq(sequence1, 3)
+#           s2 = split_seq(sequence2, 3)
+
+#           sim_score = jaccard(s1, s2)          
+#           if sim_score >= t:
+#                 continue
+#           else:
+#                 return False
+     
+#     return True
+
+#def split_seq(seq,size):
+  
+#    return [seq[i:i+size] for i in range(0, len(seq), size)]
+
+#def jaccard(s1, s2):
+#   
+#    intersection = len(list(set(s1).intersection(s2)))
+#    union = (len(s1) + len(s2)) - intersection
+    
+#    return float(intersection / union)
+
+def clust_horo():
+
+#   if os.path.isdir("./clust_horo/") != 1:
+#       os.system("mkdir ./clust_horo/")   
+   
+#   centroids = []
+#   centroids_copy = []
+#   num_centroids = len(centroids)
+
+#   for record in SeqIO.parse("./USEARCH/centroids.txt", "fasta"):
+
+#       centroids.append(record.seq)
+#       centroids_copy.append(record.seq)              
+
+#   for i in range(num_centroids):
+#       for j in range(num_centroids):
+
+#           s1 = split_seq(centroids[i], 3)
+#           s2 = split_seq(centroids_copy[j], 3)
+
+#           sim_score = jaccard(s1, s2)          
+#           if sim_score >= t:
+#               continue
+#            else:
+                #do this here: 'I’d keep a list of all the skipped #s to avoid going through the clusters again at the end' 
+#               same = cluster_compare(i, j)
+#               if !same:
+#                  cmd = 'cat cluster' + str(i) + ' cluster' + str(j) + ' > cluster' + str(i)
+#                  os.system(cmd)
+                  
+#                  cmd = 'rm cluster' + str(j)
+#                  os.system(cmd)
+                  
+#                  cmd = 'mv cluster' + str(len(centroids)) + ' cluster' + str(j)
+#                  os.system(cmd)
+                  
+                  #what about finding new centroid and removing old ones?
+                  
+#               else:
+#                  continue
+           
+            
+   print("clust_horo\n")
+
+
+def main():
+   args = get_args()
+   
+   file = open(args.input).read()
+   
 #Function for moving the USEARCH output to a new USEARCH directory
 def move_files():
 
@@ -180,22 +288,26 @@ def main():
    filename_input = args.input
    t = args.threshold
    minseqlen = args.minseqlen
-
+   p = args.processors
+                 
    #Run the desired sorting algorithm and USEARCH
+
    if args.sort == 0:
-      sort_default(filename_input, t, minseqlen)
+      sort_default(filename_input, t, minseqlen, p)
 
    elif args.sort == 1:
-      sort_by_length(filename_input, t, minseqlen)
+      sort_by_length(filename_input, t, minseqlen, p)
       
    elif args.sort == 2:
-      sort_by_abundance(filename_input, t, minseqlen)
+      sort_by_abundance(filename_input, t, minseqlen, p)
    
    else:
-      abundance_and_length(filename_input, t, minseqlen)
+      abundance_and_length(filename_input, t, minseqlen, p)
 
    move_files()
    clust_horo()
+
+   t1 = time.time()
 
    #Used as the final time for the clust_horo total run time
    t1 = time.time()
