@@ -34,7 +34,7 @@ def get_args():
 def sort_default(filename, t, minseqlen):
    t2 = time.time()
 
-   cmd = 'usearch -cluster_fast '+ filename + ' -id ' +str(t)+ ' -clusters cluster -centroids centroids.txt -minseqlength ' +str(minseqlen)
+   cmd = 'usearch -cluster_fast '+ filename + ' -id ' +str(t)+ ' -clusters cluster -centroids centroids.txt -minseqlength ' +str(minseqlen) + ' -threads ' + str(p)
    os.system(cmd)
 
    t3 = time.time()
@@ -42,7 +42,7 @@ def sort_default(filename, t, minseqlen):
 
 #Function for sorting by abundance
 def sort_by_abundance(filename, t, minseqlen):
-    cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt'
+    cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt -threads ' + str(p)
     os.system(cmd)
     
     handle=open('centroids.txt').read()
@@ -69,7 +69,7 @@ def sort_by_abundance(filename, t, minseqlen):
 
     t2 = time.time()
     
-    cmd = 'usearch -cluster_fast sorted_abundance.txt -id '+str(t)+' -clusters cluster -centroids centroids.txt -minseqlength ' + str(minseqlen)
+    cmd = 'usearch -cluster_fast sorted_abundance.txt -id '+str(t)+' -clusters cluster -centroids centroids.txt -minseqlength ' + str(minseqlen) + ' -threads ' + str(p)
     os.system(cmd)    
 
     t3 = time.time()
@@ -80,7 +80,7 @@ def sort_by_abundance(filename, t, minseqlen):
 def sort_by_length(filename, t, minseqlen):
     t2 = time.time()
 
-    cmd = 'usearch -cluster_fast '+filename+' -id '+str(t)+' -clusters cluster -centroids centroids.txt -sort length -minseqlength ' + str(minseqlen)
+    cmd = 'usearch -cluster_fast '+filename+' -id '+str(t)+' -clusters cluster -centroids centroids.txt -sort length -minseqlength ' + str(minseqlen) + ' -threads ' + str(p)
     os.system(cmd)
     
     t3 = time.time()
@@ -89,7 +89,7 @@ def sort_by_length(filename, t, minseqlen):
 
 # Function for sorting by abundance and length
 def abundance_and_length(filename, t, minseqlen):
-    cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt -minseqlength ' + str(minseqlen)
+    cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt -minseqlength ' + str(minseqlen) + ' -threads ' + str(p)
     os.system(cmd)
     
     handle=open('centroids.txt').read()
@@ -125,7 +125,31 @@ def move_files():
    os.system("mv ./centroids.txt ./USEARCH/")
 
    if os.path.exists("./sorted_abundance.txt") == 1:
-       os.system("rm sorted_abundance.txt")
+       os.system("rm sorted_abundance.txt
+                 
+#def cluster_compare(i, j):
+#   cluster1 = []
+#   cluster2 = []
+               
+#   for record in SeqIO.parse("./USEARCH/cluster" + str(i), "fasta"):
+#       cluster1.append(record.seq)
+                 
+#   for record in SeqIO.parse("./USEARCH/cluster" + str(j), "fasta"):
+#       cluster2.append(record.seq)
+                 
+#   for sequence1 in cluster1:
+#      for sequence2 in cluster2:
+
+#           s1 = split_seq(sequence1, 3)
+#           s2 = split_seq(sequence2, 3)
+
+#           sim_score = jaccard(s1, s2)          
+#           if sim_score >= t:
+#                 continue
+#           else:
+#                 return False
+     
+#     return True
 
 #def split_seq(seq,size):
   
@@ -145,20 +169,41 @@ def clust_horo():
    
 #   centroids = []
 #   centroids_copy = []
+#   num_centroids = len(centroids)
 
 #   for record in SeqIO.parse("./USEARCH/centroids.txt", "fasta"):
 
-#       centroids.append(record)
-#       centroids_copy.append(record)              
+#       centroids.append(record.seq)
+#       centroids_copy.append(record.seq)              
 
-#   for centroid1 in centroids:
-#       for centroid2 in centroids_copy:
+#   for i in range(num_centroids):
+#       for j in range(num_centroids):
 
-#           s1 = split_seq(centroid1, 3)
-#           s2 = split_seq(centroid2, 3)
+#           s1 = split_seq(centroids[i], 3)
+#           s2 = split_seq(centroids_copy[j], 3)
 
-           #sim_score = jaccard(s1, s2)          
-           #print(sim_score)
+#           sim_score = jaccard(s1, s2)          
+#           if sim_score >= t:
+#               continue
+#            else:
+                #do this here: 'I’d keep a list of all the skipped #s to avoid going through the clusters again at the end' 
+#               same = cluster_compare(i, j)
+#               if !same:
+#                  cmd = 'cat cluster' + str(i) + ' cluster' + str(j) + ' > cluster' + str(i)
+#                  os.system(cmd)
+                  
+#                  cmd = 'rm cluster' + str(j)
+#                  os.system(cmd)
+                  
+#                  cmd = 'mv cluster' + str(len(centroids)) + ' cluster' + str(j)
+#                  os.system(cmd)
+                  
+                  #what about finding new centroid and removing old ones?
+                  
+#               else:
+#                  continue
+           
+            
    print("clust_horo\n")
 
 
