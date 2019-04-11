@@ -17,24 +17,12 @@ def get_args():
    argparser = argparse.ArgumentParser()
    argparser.add_argument("-i", "--input", required = True, help = "Input file name is required! Input file must be in fasta format.")
    argparser.add_argument("-t", "--threshold", type = float, default = 0.5, help = "The minimum threshold desired when clustering the input sequences")
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 2219fd94f7d842f16523432bc3126e9b4f58e175
    argparser.add_argument("-o", "--output", type = str, help = "Output file name to which the results are written to. There is no need to provide an extension; this is simply the name you want on your clusters. An example of a common output name is 'cluster_genomename'")
    argparser.add_argument("-m", "--minseqlen", default = 0, type = int, help = "Throw out any input sequences that are below the minimum sequence length")   
    argparser.add_argument("-s", "--sort", type = int, default = 0,  help = "Select 0 to not sort the input (default), 1 to sort the input file in decreasing sequence length, 2 to sort by decreasing abundance, and 3 to sort by both")
    argparser.add_argument("-p", "--processors", type = int, default = 1, help = "Input the total number of processors you want to use.")
 
-<<<<<<< HEAD
-=======
-   argparser.add_argument("-o", "--output", type = str, help = "Output file name to which the results are written to")
-   argparser.add_argument("-m", "--minseqlen", default = 0, type = int, help = "Throw out any input sequences that are below the minimum sequence length")   
-   argparser.add_argument("-s", "--sort", type = int, default = 0,  help = "Select 0 to not sort the input (default), 1 to sort the input file in decreasing sequence length, 2 to sort by decreasing abundance, and 3 to sort by both")
    
->>>>>>> Brian's-work
-=======
->>>>>>> 2219fd94f7d842f16523432bc3126e9b4f58e175
    args = argparser.parse_args()
 
    # If an output filename is not specified
@@ -46,54 +34,23 @@ def get_args():
    return args
 
 #Function for running cluster_fast without any sorting
-<<<<<<< HEAD
-def sort_default(filename, t, minseqlen):
-<<<<<<< HEAD
-=======
 def sort_default(filename, t, minseqlen, p):
-
-   t2 = time.time()
-
-   cmd = 'usearch -cluster_fast '+ filename + ' -id ' +str(t)+ ' -clusters cluster -centroids centroids.txt -minseqlength ' +str(minseqlen) + ' -threads ' + str(p)
-   os.system(cmd)
-
->>>>>>> 2219fd94f7d842f16523432bc3126e9b4f58e175
 
    #Used as the initial time for USEARCH run time
    t2 = time.time()
-   
-   #Running USEARCH
-   cmd = 'usearch -cluster_fast '+ filename + ' -id ' +str(t)+ ' -clusters cluster -centroids centroids.txt -minseqlength ' +str(minseqlen)
-   os.system(cmd)
 
-   #Print the total USEARCH run time
-<<<<<<< HEAD
-=======
-   t2 = time.time()
-
+   #Run USEARCH
    cmd = 'usearch -cluster_fast '+ filename + ' -id ' +str(t)+ ' -clusters cluster -centroids centroids.txt -minseqlength ' +str(minseqlen) + ' -threads ' + str(p)
    os.system(cmd)
 
->>>>>>> Brian's-work
-=======
->>>>>>> 2219fd94f7d842f16523432bc3126e9b4f58e175
+   #Print the total USEARCH run time
    t3 = time.time()
    print("USEARCH run time: " + str(t3-t2) + " seconds")
 
 #Function for sorting by abundance
-<<<<<<< HEAD
-def sort_by_abundance(filename, t, minseqlen):
-<<<<<<< HEAD
-    cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt'
-=======
-    cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt -threads ' + str(p)
->>>>>>> Brian's-work
-=======
 def sort_by_abundance(filename, t, minseqlen, p):
 
     cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt -threads ' + str(p)
-
->>>>>>> 2219fd94f7d842f16523432bc3126e9b4f58e175
     os.system(cmd)
     
     handle=open('centroids.txt').read()
@@ -120,17 +77,7 @@ def sort_by_abundance(filename, t, minseqlen, p):
 
     t2 = time.time()
     
-<<<<<<< HEAD
-<<<<<<< HEAD
-    cmd = 'usearch -cluster_fast sorted_abundance.txt -id '+str(t)+' -clusters cluster -centroids centroids.txt -minseqlength ' + str(minseqlen)
-=======
     cmd = 'usearch -cluster_fast sorted_abundance.txt -id '+str(t)+' -clusters cluster -centroids centroids.txt -minseqlength ' + str(minseqlen) + ' -threads ' + str(p)
->>>>>>> Brian's-work
-=======
-
-    cmd = 'usearch -cluster_fast sorted_abundance.txt -id '+str(t)+' -clusters cluster -centroids centroids.txt -minseqlength ' + str(minseqlen) + ' -threads ' + str(p)
-
->>>>>>> 2219fd94f7d842f16523432bc3126e9b4f58e175
     os.system(cmd)    
 
     t3 = time.time()
@@ -139,17 +86,10 @@ def sort_by_abundance(filename, t, minseqlen, p):
 
 # Function for sorting by length
 def sort_by_length(filename, t, minseqlen, p):
+   
     t2 = time.time()
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    cmd = 'usearch -cluster_fast '+filename+' -id '+str(t)+' -clusters cluster -centroids centroids.txt -sort length -minseqlength ' + str(minseqlen)
-=======
     cmd = 'usearch -cluster_fast '+filename+' -id '+str(t)+' -clusters cluster -centroids centroids.txt -sort length -minseqlength ' + str(minseqlen) + ' -threads ' + str(p)
->>>>>>> Brian's-work
-=======
-    cmd = 'usearch -cluster_fast '+filename+' -id '+str(t)+' -clusters cluster -centroids centroids.txt -sort length -minseqlength ' + str(minseqlen) + ' -threads ' + str(p)
->>>>>>> 2219fd94f7d842f16523432bc3126e9b4f58e175
     os.system(cmd)
     
     t3 = time.time()
@@ -157,18 +97,9 @@ def sort_by_length(filename, t, minseqlen, p):
     print("USEARCH run time: " + str(t3-t2) + " seconds.")
 
 # Function for sorting by abundance and length
-<<<<<<< HEAD
-def abundance_and_length(filename, t, minseqlen):
-<<<<<<< HEAD
-    cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt -minseqlength ' + str(minseqlen)
-=======
-    cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt -minseqlength ' + str(minseqlen) + ' -threads ' + str(p)
->>>>>>> Brian's-work
-=======
 def abundance_and_length(filename, t, minseqlen, p):
 
     cmd = 'usearch -cluster_fast '+filename+' -id 1.0 -clusters cluster -centroids centroids.txt -minseqlength ' + str(minseqlen) + ' -threads ' + str(p)
->>>>>>> 2219fd94f7d842f16523432bc3126e9b4f58e175
     os.system(cmd)
     
     handle=open('centroids.txt').read()
@@ -195,8 +126,6 @@ def abundance_and_length(filename, t, minseqlen, p):
     
     sort_by_length('sorted_abundance.txt', t, minseqlen)
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 #Function for moving the USEARCH output to a new USEARCH directory
 def move_files():
 
@@ -212,18 +141,42 @@ def move_files():
    if os.path.exists("./sorted_abundance.txt") == 1:
        os.system("rm sorted_abundance.txt")
 
-#Function for splitting a sequence into length 'size'
+                 
+def cluster_compare(i, j):
+   cluster1 = []
+   cluster2 = []
+               
+   for record in SeqIO.parse("./USEARCH/cluster" + str(i), "fasta"):
+       cluster1.append(record.seq)
+                 
+   for record in SeqIO.parse("./USEARCH/cluster" + str(j), "fasta"):
+       cluster2.append(record.seq)
+                 
+   for sequence1 in cluster1:
+      for sequence2 in cluster2:
+
+           s1 = split_seq(sequence1, 3)
+           s2 = split_seq(sequence2, 3)
+
+           sim_score = jaccard(s1, s2)          
+           if sim_score >= t:
+                 continue
+           else:
+                 return False
+     
+      return True
+
 def split_seq(seq,size):
   
     return [seq[i:i+size] for i in range(0, len(seq), size)]
 
-#Function for finding the Jaccardian distance
 def jaccard(s1, s2):
+   
+    intersection = len(list(set(s1).intersection(s2)))
+    union = (len(s1) + len(s2)) - intersection
     
-   #print("TO DO! Function for findind Jaccardian distance! Currently does not work.") 
-   return 0
+    return float(intersection / union)
 
-#Function for reclustering the USEARCH clusters
 def clust_horo():
 
    if os.path.isdir("./clust_horo/") != 1:
@@ -231,186 +184,39 @@ def clust_horo():
    
    centroids = []
    centroids_copy = []
+   num_centroids = len(centroids)
 
    for record in SeqIO.parse("./USEARCH/centroids.txt", "fasta"):
 
-       centroids.append(record)
-       centroids_copy.append(record)              
+       centroids.append(record.seq)
+       centroids_copy.append(record.seq)              
 
-   for centroid1 in centroids:
-       for centroid2 in centroids_copy:
+   for i in range(num_centroids):
+       for j in range(num_centroids):
 
-           s1 = split_seq(centroid1, 3)
-           s2 = split_seq(centroid2, 3)
+           s1 = split_seq(centroids[i], 3)
+           s2 = split_seq(centroids_copy[j], 3)
 
            sim_score = jaccard(s1, s2)          
-           #print(sim_score)
-
-def main():
-
-   #Get the flags
-   args = get_args()
-   
-   #Grab the input filename, threshold, and minseqlen
-=======
-=======
-
->>>>>>> 2219fd94f7d842f16523432bc3126e9b4f58e175
-def move_files():
-
-   if os.path.isdir("./USEARCH") != 1:
-       os.system("mkdir ./USEARCH")
-   
-   os.system("mv ./cluster* ./USEARCH/")
-   os.system("mv ./centroids.txt ./USEARCH/")
-
-   if os.path.exists("./sorted_abundance.txt") == 1:
-       os.system("rm sorted_abundance.txt
-                 
-#def cluster_compare(i, j):
-#   cluster1 = []
-#   cluster2 = []
-               
-#   for record in SeqIO.parse("./USEARCH/cluster" + str(i), "fasta"):
-#       cluster1.append(record.seq)
-                 
-#   for record in SeqIO.parse("./USEARCH/cluster" + str(j), "fasta"):
-#       cluster2.append(record.seq)
-                 
-#   for sequence1 in cluster1:
-#      for sequence2 in cluster2:
-
-#           s1 = split_seq(sequence1, 3)
-#           s2 = split_seq(sequence2, 3)
-
-#           sim_score = jaccard(s1, s2)          
-#           if sim_score >= t:
-#                 continue
-#           else:
-#                 return False
-     
-#     return True
-
-#def split_seq(seq,size):
-  
-#    return [seq[i:i+size] for i in range(0, len(seq), size)]
-
-#def jaccard(s1, s2):
-#   
-#    intersection = len(list(set(s1).intersection(s2)))
-#    union = (len(s1) + len(s2)) - intersection
-    
-#    return float(intersection / union)
-
-def clust_horo():
-
-#   if os.path.isdir("./clust_horo/") != 1:
-#       os.system("mkdir ./clust_horo/")   
-   
-#   centroids = []
-#   centroids_copy = []
-#   num_centroids = len(centroids)
-
-#   for record in SeqIO.parse("./USEARCH/centroids.txt", "fasta"):
-
-#       centroids.append(record.seq)
-#       centroids_copy.append(record.seq)              
-
-#   for i in range(num_centroids):
-#       for j in range(num_centroids):
-
-#           s1 = split_seq(centroids[i], 3)
-#           s2 = split_seq(centroids_copy[j], 3)
-
-#           sim_score = jaccard(s1, s2)          
-#           if sim_score >= t:
-#               continue
-#            else:
+           if sim_score >= t:
+               continue
+           else:
                 #do this here: 'I’d keep a list of all the skipped #s to avoid going through the clusters again at the end' 
-#               same = cluster_compare(i, j)
-#               if !same:
-#                  cmd = 'cat cluster' + str(i) + ' cluster' + str(j) + ' > cluster' + str(i)
-#                  os.system(cmd)
+               same = cluster_compare(i, j)
+               if same == False:
+                  cmd = 'cat cluster' + str(i) + ' cluster' + str(j) + ' > cluster' + str(i)
+                  os.system(cmd)
                   
-#                  cmd = 'rm cluster' + str(j)
-#                  os.system(cmd)
+                  cmd = 'rm cluster' + str(j)
+                  os.system(cmd)
                   
-#                  cmd = 'mv cluster' + str(len(centroids)) + ' cluster' + str(j)
-#                  os.system(cmd)
+                  cmd = 'mv cluster' + str(len(centroids)) + ' cluster' + str(j)
+                  os.system(cmd)
                   
                   #what about finding new centroid and removing old ones?
                   
-#               else:
-#                  continue
-           
-            
-   print("clust_horo\n")
-
-
-def main():
-   args = get_args()
-   
-   file = open(args.input).read()
-   
-<<<<<<< HEAD
->>>>>>> Brian's-work
-   filename_input = args.input
-   t = args.threshold
-   minseqlen = args.minseqlen
-
-<<<<<<< HEAD
-   #Run the desired sorting algorithm and USEARCH
-=======
->>>>>>> Brian's-work
-=======
-#Function for moving the USEARCH output to a new USEARCH directory
-def move_files():
-
-   #Check if there is a USEARCH directory and if not, make one
-   if os.path.isdir("./USEARCH") != 1:
-       os.system("mkdir ./USEARCH")
-   
-   #Move the USEARCH output to the new USEARCH directory
-   os.system("mv ./cluster* ./USEARCH/")
-   os.system("mv ./centroids.txt ./USEARCH/")
-
-   #Remove unwanted files
-   if os.path.exists("./sorted_abundance.txt") == 1:
-       os.system("rm sorted_abundance.txt")
-
-#Function for splitting a sequence into length 'size'
-def split_seq(seq,size):
-  
-    return [seq[i:i+size] for i in range(0, len(seq), size)]
-
-#Function for finding the Jaccardian distance
-def jaccard(s1, s2):
-    
-   #print("TO DO! Function for findind Jaccardian distance! Currently does not work.") 
-   return 0
-
-#Function for reclustering the USEARCH clusters
-def clust_horo():
-
-   if os.path.isdir("./clust_horo/") != 1:
-       os.system("mkdir ./clust_horo/")   
-   
-   centroids = []
-   centroids_copy = []
-
-   for record in SeqIO.parse("./USEARCH/centroids.txt", "fasta"):
-
-       centroids.append(record)
-       centroids_copy.append(record)              
-
-   for centroid1 in centroids:
-       for centroid2 in centroids_copy:
-
-           s1 = split_seq(centroid1, 3)
-           s2 = split_seq(centroid2, 3)
-
-           sim_score = jaccard(s1, s2)          
-           #print(sim_score)
+               else:
+                  continue
 
 def main():
 
@@ -425,7 +231,6 @@ def main():
                  
    #Run the desired sorting algorithm and USEARCH
 
->>>>>>> 2219fd94f7d842f16523432bc3126e9b4f58e175
    if args.sort == 0:
       sort_default(filename_input, t, minseqlen, p)
 
@@ -441,20 +246,8 @@ def main():
    move_files()
    clust_horo()
 
-<<<<<<< HEAD
-<<<<<<< HEAD
    #Used as the final time for the clust_horo total run time
    t1 = time.time()
-=======
-   t1 = time.time()
-
->>>>>>> Brian's-work
-=======
-   t1 = time.time()
-
-   #Used as the final time for the clust_horo total run time
-   t1 = time.time()
->>>>>>> 2219fd94f7d842f16523432bc3126e9b4f58e175
    print("clust_horo total run time: " + str(t1-t0) + " seconds.\n")
 
 if __name__ == "__main__":
