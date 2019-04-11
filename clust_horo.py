@@ -7,14 +7,7 @@ import os
 from Bio import SeqIO
 import time
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 #Used as the intitial time for clust_horo run time
-=======
->>>>>>> Brian's-work
-=======
-#Used as the intitial time for clust_horo run time
->>>>>>> 2219fd94f7d842f16523432bc3126e9b4f58e175
 t0 = time.time()
 
 #Function used to grab the flags
