@@ -35,17 +35,11 @@ def get_args():
 #Function for running cluster_fast without any sorting
 def sort_default(filename, t, minseqlen, p):
 
-   t2 = time.time()
-
-   cmd = 'usearch -cluster_fast '+ filename + ' -id ' +str(t)+ ' -clusters cluster -centroids centroids.txt -minseqlength ' +str(minseqlen) + ' -threads ' + str(p)
-   os.system(cmd)
-
-
    #Used as the initial time for USEARCH run time
    t2 = time.time()
    
    #Running USEARCH
-   cmd = 'usearch -cluster_fast '+ filename + ' -id ' +str(t)+ ' -clusters cluster -centroids centroids.txt -minseqlength ' +str(minseqlen)
+   cmd = 'usearch -cluster_fast '+ filename + ' -id ' +str(t)+ ' -clusters cluster -centroids centroids.txt -minseqlength ' +str(minseqlen) + ' -threads ' + str(p)
    os.system(cmd)
 
    #Print the total USEARCH run time
@@ -137,147 +131,101 @@ def abundance_and_length(filename, t, minseqlen, p):
 def move_files():
 
    if os.path.isdir("./USEARCH") != 1:
-       os.system("mkdir ./USEARCH")
+        os.system("mkdir ./USEARCH")
    
-   os.system("mv ./cluster* ./USEARCH/")
-   os.system("mv ./centroids.txt ./USEARCH/")
+        os.system("mv ./cluster* ./USEARCH/")
+        os.system("mv ./centroids.txt ./USEARCH/")
 
    if os.path.exists("./sorted_abundance.txt") == 1:
-       os.system("rm sorted_abundance.txt
+        os.system("rm sorted_abundance.txt")
                  
-#def cluster_compare(i, j):
-#   cluster1 = []
-#   cluster2 = []
+def cluster_compare(i, j, t):
+  cluster1 = []
+  cluster2 = []
                
-#   for record in SeqIO.parse("./USEARCH/cluster" + str(i), "fasta"):
-#       cluster1.append(record.seq)
+  for record in SeqIO.parse("./USEARCH/cluster" + str(i), "fasta"):
+      cluster1.append(record.seq)
                  
-#   for record in SeqIO.parse("./USEARCH/cluster" + str(j), "fasta"):
-#       cluster2.append(record.seq)
+  for record in SeqIO.parse("./USEARCH/cluster" + str(j), "fasta"):
+      cluster2.append(record.seq)
                  
-#   for sequence1 in cluster1:
-#      for sequence2 in cluster2:
+  for sequence1 in cluster1:
+     for sequence2 in cluster2:
 
-#           s1 = split_seq(sequence1, 3)
-#           s2 = split_seq(sequence2, 3)
+          s1 = split_seq(sequence1, 3)
+          s2 = split_seq(sequence2, 3)
 
-#           sim_score = jaccard(s1, s2)          
-#           if sim_score >= t:
-#                 continue
-#           else:
-#                 return False
-     
-#     return True
+          sim_score = jaccard(s1, s2)          
+          if sim_score >= t:
+                continue
+          else:
+                return False
+  return True
 
-#def split_seq(seq,size):
+def split_seq(seq,size):
   
-#    return [seq[i:i+size] for i in range(0, len(seq), size)]
+   return [seq[i:i+size] for i in range(0, len(seq), size)]
 
-#def jaccard(s1, s2):
-#   
-#    intersection = len(list(set(s1).intersection(s2)))
-#    union = (len(s1) + len(s2)) - intersection
+def jaccard(s1, s2):
+  
+   intersection = len(list(set(s1).intersection(s2)))
+   union = (len(s1) + len(s2)) - intersection
     
-#    return float(intersection / union)
+   return float(intersection / union)
 
-def clust_horo():
+def clust_horo(t):
 
-#   if os.path.isdir("./clust_horo/") != 1:
-#       os.system("mkdir ./clust_horo/")   
+  print(t)
+  os.system('cd USEARCH')
+
+  if os.path.isdir("./clust_horo/") != 1:
+      os.system("mkdir ./clust_horo/")   
    
-#   centroids = []
-#   centroids_copy = []
-#   num_centroids = len(centroids)
+  centroids = []
+  centroids_copy = []
+  
 
-#   for record in SeqIO.parse("./USEARCH/centroids.txt", "fasta"):
+  for record in SeqIO.parse("./USEARCH/centroids.txt", "fasta"):
 
-#       centroids.append(record.seq)
-#       centroids_copy.append(record.seq)              
+      centroids.append(record.seq)
+      centroids_copy.append(record.seq)              
 
-#   for i in range(num_centroids):
-#       for j in range(num_centroids):
+  num_centroids = len(centroids)
+  visited = []
+  for i in range(num_centroids):
+      for j in range(num_centroids):
+          if i in visited:
+            break
+          if j in visited:
+            break
 
-#           s1 = split_seq(centroids[i], 3)
-#           s2 = split_seq(centroids_copy[j], 3)
+          s1 = split_seq(centroids[i], 3)
+          s2 = split_seq(centroids_copy[j], 3)
 
-#           sim_score = jaccard(s1, s2)          
-#           if sim_score >= t:
-#               continue
-#            else:
-                #do this here: 'I’d keep a list of all the skipped #s to avoid going through the clusters again at the end' 
-#               same = cluster_compare(i, j)
-#               if !same:
-#                  cmd = 'cat cluster' + str(i) + ' cluster' + str(j) + ' > cluster' + str(i)
-#                  os.system(cmd)
+          sim_score = jaccard(s1, s2)          
+          if sim_score >= t:
+              continue
+          else:
+              visited.append(i)
+              visited.append(j) 
+            same = cluster_compare(i, j, t)
+            if same == False:
+               cmd = 'cat cluster' + str(i) + ' cluster' + str(j) + ' > cluster' + str(i)
+               os.system(cmd)
+                
+               cmd = 'rm cluster' + str(j)
+               os.system(cmd)
                   
-#                  cmd = 'rm cluster' + str(j)
-#                  os.system(cmd)
-                  
-#                  cmd = 'mv cluster' + str(len(centroids)) + ' cluster' + str(j)
-#                  os.system(cmd)
+               cmd = 'mv cluster' + str(len(centroids)) + ' cluster' + str(j)
+               os.system(cmd)
                   
                   #what about finding new centroid and removing old ones?
                   
-#               else:
-#                  continue
+            else:
+               continue
            
-            
-   print("clust_horo\n")
 
-
-def main():
-   args = get_args()
-   
-   file = open(args.input).read()
-   
-#Function for moving the USEARCH output to a new USEARCH directory
-def move_files():
-
-   #Check if there is a USEARCH directory and if not, make one
-   if os.path.isdir("./USEARCH") != 1:
-       os.system("mkdir ./USEARCH")
-   
-   #Move the USEARCH output to the new USEARCH directory
-   os.system("mv ./cluster* ./USEARCH/")
-   os.system("mv ./centroids.txt ./USEARCH/")
-
-   #Remove unwanted files
-   if os.path.exists("./sorted_abundance.txt") == 1:
-       os.system("rm sorted_abundance.txt")
-
-#Function for splitting a sequence into length 'size'
-def split_seq(seq,size):
-  
-    return [seq[i:i+size] for i in range(0, len(seq), size)]
-
-#Function for finding the Jaccardian distance
-def jaccard(s1, s2):
-    
-   #print("TO DO! Function for findind Jaccardian distance! Currently does not work.") 
-   return 0
-
-#Function for reclustering the USEARCH clusters
-def clust_horo():
-
-   if os.path.isdir("./clust_horo/") != 1:
-       os.system("mkdir ./clust_horo/")   
-   
-   centroids = []
-   centroids_copy = []
-
-   for record in SeqIO.parse("./USEARCH/centroids.txt", "fasta"):
-
-       centroids.append(record)
-       centroids_copy.append(record)              
-
-   for centroid1 in centroids:
-       for centroid2 in centroids_copy:
-
-           s1 = split_seq(centroid1, 3)
-           s2 = split_seq(centroid2, 3)
-
-           sim_score = jaccard(s1, s2)          
-           #print(sim_score)
+  print("clust_horo\n")
 
 def main():
 
@@ -305,7 +253,7 @@ def main():
       abundance_and_length(filename_input, t, minseqlen, p)
 
    move_files()
-   clust_horo()
+   clust_horo(t)
 
    t1 = time.time()
 
