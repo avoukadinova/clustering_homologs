@@ -173,9 +173,12 @@ def split_seq(seq,size):
 def jaccard(s1, s2):
    
     intersection = len(list(set(s1).intersection(s2)))
+  # intersection = len(set.intersection(*[set(s1), set(s2)]))
     union = (len(s1) + len(s2)) - intersection
-    
+  # union = len(set.union(*[set(s1), set(s2)]))
+      
     return float(intersection / union)
+  # return 1.0 - (intersection/float(union))
 
 def clust_horo():
 
