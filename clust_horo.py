@@ -196,22 +196,6 @@ def similarity(seq1, seq2):
    
    return score / columns
 
-handle = open('./USEARCH/centroids.txt')
-centroids = []
-
-   for record in SeqIO.parse(handle, 'fasta'):
-      centroids.append(record.seq)
-      
-scores = []
-      
-   for centroid1, centroid2 in combinations(centroids, 2):
-     score = similarity(centroid1, centroid2)
-     scores.append(score)
-      
-   inter_similarity = sum(scores) / len(scores)
-   print(inter_similarity)
-  
-
 def clust_horo():
 
    if os.path.isdir("./clust_horo/") != 1:
