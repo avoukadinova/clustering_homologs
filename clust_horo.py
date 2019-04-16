@@ -5,6 +5,8 @@ import argparse
 import sys
 import os
 from Bio import SeqIO
+from itertools import combinations
+from Bio import pairwise2
 import time
 
 #Used as the intitial time for clust_horo run time
@@ -125,6 +127,7 @@ def abundance_and_length(filename, t, minseqlen, p):
     handle.close()
     
     sort_by_length('sorted_abundance.txt', t, minseqlen)
+ 
 
 #Function for moving the USEARCH output to a new USEARCH directory
 def move_files():
@@ -170,6 +173,7 @@ def split_seq(seq,size):
   
     return [seq[i:i+size] for i in range(0, len(seq), size)]
 
+"""
 def jaccard(s1, s2):
    
     intersection = len(list(set(s1).intersection(s2)))
@@ -179,6 +183,34 @@ def jaccard(s1, s2):
       
     return float(intersection / union)
   # return 1.0 - (intersection/float(union))
+  
+"""
+
+#similarity measure
+def similarity(seq1, seq2):
+   len1 = len(seq1)
+   len2 = len(seq2)
+   alignments = pairwise2.align.globalxx(seq1, seq2)
+   score = alignments[0][2]
+   columns = len(alignments[0][0])
+   
+   return score / columns
+
+handle = open('./USEARCH/centroids.txt')
+centroids = []
+
+   for record in SeqIO.parse(handle, 'fasta'):
+      centroids.append(record.seq)
+      
+scores = []
+      
+   for centroid1, centroid2 in combinations(centroids, 2):
+     score = similarity(centroid1, centroid2)
+     scores.append(score)
+      
+   inter_similarity = sum(scores) / len(scores)
+   print(inter_similarity)
+  
 
 def clust_horo():
 
