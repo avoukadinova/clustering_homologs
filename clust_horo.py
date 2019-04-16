@@ -197,13 +197,15 @@ def clust_horo():
            s1 = split_seq(centroids[i], 3)
            s2 = split_seq(centroids_copy[j], 3)
 
-           sim_score = jaccard(s1, s2)          
-           if sim_score >= t:
+           sim_score = jaccard(s1, s2)
+          
+           if sim_score <= t:
                continue
            else:
                 #do this here: 'I’d keep a list of all the skipped #s to avoid going through the clusters again at the end' 
-               same = cluster_compare(i, j)
-               if same == False:
+              same = cluster_compare(i, j)
+               
+              if same == False:
                   cmd = 'cat cluster' + str(i) + ' cluster' + str(j) + ' > cluster' + str(i)
                   os.system(cmd)
                   
@@ -215,7 +217,7 @@ def clust_horo():
                   
                   #what about finding new centroid and removing old ones?
                   
-               else:
+              else:
                   continue
 
 def main():
