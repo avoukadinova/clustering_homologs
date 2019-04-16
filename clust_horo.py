@@ -8,6 +8,7 @@ from Bio import SeqIO
 from itertools import combinations
 from Bio import pairwise2
 import time
+from itertools import combinations
 
 #Used as the intitial time for clust_horo run time
 t0 = time.time()
@@ -126,7 +127,7 @@ def abundance_and_length(filename, t, minseqlen, p):
     os.system('rm centroids.txt')
     handle.close()
     
-    sort_by_length('sorted_abundance.txt', t, minseqlen)
+    sort_by_length('sorted_abundance.txt', t, minseqlen, p)
  
 
 #Function for moving the USEARCH output to a new USEARCH directory
@@ -145,46 +146,29 @@ def move_files():
        os.system("rm sorted_abundance.txt")
 
                  
-def cluster_compare(i, j):
-   cluster1 = []
-   cluster2 = []
-               
-   for record in SeqIO.parse("./USEARCH/cluster" + str(i), "fasta"):
-       cluster1.append(record.seq)
-                 
-   for record in SeqIO.parse("./USEARCH/cluster" + str(j), "fasta"):
-       cluster2.append(record.seq)
-                 
-   for sequence1 in cluster1:
-      for sequence2 in cluster2:
-
-           s1 = split_seq(sequence1, 3)
-           s2 = split_seq(sequence2, 3)
-
-           sim_score = jaccard(s1, s2)          
-           if sim_score >= t:
-                 continue
-           else:
-                 return False
-     
-      return True
-
-def split_seq(seq,size):
-  
-    return [seq[i:i+size] for i in range(0, len(seq), size)]
-
-"""
-def jaccard(s1, s2):
-   
-    intersection = len(list(set(s1).intersection(s2)))
-  # intersection = len(set.intersection(*[set(s1), set(s2)]))
-    union = (len(s1) + len(s2)) - intersection
-  # union = len(set.union(*[set(s1), set(s2)]))
-      
-    return float(intersection / union)
-  # return 1.0 - (intersection/float(union))
-  
-"""
+#def cluster_compare(i, j):
+#   cluster1 = []
+#   cluster2 = []
+#               
+#   for record in SeqIO.parse("./USEARCH/cluster" + str(i), "fasta"):
+#       cluster1.append(record.seq)
+#                 
+#   for record in SeqIO.parse("./USEARCH/cluster" + str(j), "fasta"):
+#       cluster2.append(record.seq)
+#                 
+#   for sequence1 in cluster1:
+#      for sequence2 in cluster2:
+#
+#           s1 = split_seq(sequence1, 3)
+#           s2 = split_seq(sequence2, 3)
+#
+#           sim_score = jaccard(s1, s2)          
+#           if sim_score >= t:
+#                 continue
+#           else:
+#                 return False
+#     
+#      return True
 
 #similarity measure
 def similarity(seq1, seq2):
@@ -196,7 +180,7 @@ def similarity(seq1, seq2):
    
    return score / columns
 
-def clust_horo():
+def clust_horo(t):
 
    if os.path.isdir("./clust_horo/") != 1:
        os.system("mkdir ./clust_horo/")   
@@ -210,34 +194,35 @@ def clust_horo():
        centroids.append(record.seq)
        centroids_copy.append(record.seq)              
 
-   for i in range(num_centroids):
-       for j in range(num_centroids):
+   i = 0
+   for centroid1, centroid2 in combinations(centroids, 2):
 
-           s1 = split_seq(centroids[i], 3)
-           s2 = split_seq(centroids_copy[j], 3)
+       sim_score = similarity(str(centroid1), str(centroid2))
 
-           sim_score = jaccard(s1, s2)
-          
-           if sim_score <= t:
-               continue
-           else:
+       print(i)
+       i += 1
+
+       if sim_score <= t:
+           continue
+       else:
+           print("They are the same\n")
                 #do this here: 'I’d keep a list of all the skipped #s to avoid going through the clusters again at the end' 
-              same = cluster_compare(i, j)
+              #same = similarity(i, j)
                
-              if same == False:
-                  cmd = 'cat cluster' + str(i) + ' cluster' + str(j) + ' > cluster' + str(i)
-                  os.system(cmd)
+              #if same == False:
+              #    cmd = 'cat cluster' + str(i) + ' cluster' + str(j) + ' > cluster' + str(i)
+              #    os.system(cmd)
                   
-                  cmd = 'rm cluster' + str(j)
-                  os.system(cmd)
+              #    cmd = 'rm cluster' + str(j)
+              #    os.system(cmd)
                   
-                  cmd = 'mv cluster' + str(len(centroids)) + ' cluster' + str(j)
-                  os.system(cmd)
+              #    cmd = 'mv cluster' + str(len(centroids)) + ' cluster' + str(j)
+              #    os.system(cmd)
                   
                   #what about finding new centroid and removing old ones?
                   
-              else:
-                  continue
+              #else:
+              #    continue
 
 def main():
 
@@ -265,7 +250,7 @@ def main():
       abundance_and_length(filename_input, t, minseqlen, p)
 
    move_files()
-   clust_horo()
+   clust_horo(t)
 
    #Used as the final time for the clust_horo total run time
    t1 = time.time()
