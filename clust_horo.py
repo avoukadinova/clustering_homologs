@@ -138,6 +138,11 @@ def move_files():
        os.system("mkdir ./USEARCH")
    
    #Move the USEARCH output to the new USEARCH directory
+   os.system("mv ./cluster1* ./USEARCH/")
+   os.system("mv ./cluster2* ./USEARCH/")
+   os.system("mv ./cluster3* ./USEARCH/")
+   os.system("mv ./cluster4* ./USEARCH/")
+   os.system("mv ./cluster5* ./USEARCH/")
    os.system("mv ./cluster* ./USEARCH/")
    os.system("mv ./centroids.txt ./USEARCH/")
 
