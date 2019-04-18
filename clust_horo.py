@@ -188,6 +188,7 @@ def clust_horo(t):
     centroids = []
     # num_centroids = int(subprocess.getoutput('ls | grep "cluster" | wc -l')) gotta figure out how to get correct pwd for this
     num_centroids = open('centroids.txt').read().count('>')
+    #print(num_centroids)
 
     for i in range(num_centroids):
         centroid = next(SeqIO.parse('./USEARCH_results/cluster'+str(i), 'fasta'))
@@ -207,9 +208,12 @@ def clust_horo(t):
     os.system(cmd)
 
     num_new_centroids = open('centroids_clustered.txt').read().count('>')
-    
+    #print(num_new_centroids)    
     print("clust_horo found " + str(num_centroids - num_new_centroids) + " homologous clusters!")
 
+    for i in range(num_new_centroids):
+         if (">cluster" + str(i) + '\n') not in open("centroids_clustered.txt").read():
+              print("cluster" + str(i))
     #for centroid1, centroid2 in combinations(centroids, 2):
 
     #    sim_score = similarity(str(centroid1), str(centroid2))
@@ -218,6 +222,7 @@ def clust_horo(t):
     #        continue
     #    else:
     #        print("They might be the same\n")
+
     #        i = centroids.index(centroid1)
     #        j = centroids.index(centroid2)
             # do this here: 'I’d keep a list of all the skipped #s to avoid going through the clusters again at the end' 
