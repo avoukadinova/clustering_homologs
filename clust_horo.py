@@ -143,7 +143,7 @@ def move_files():
     os.system("mv ./cluster4* ./USEARCH_results/")
     os.system("mv ./cluster5* ./USEARCH_results/")
     os.system("mv ./cluster* ./USEARCH_results/")
-    os.system("mv ./centroids.txt ./USEARCH_results/")
+    #os.system("mv ./centroids.txt ./USEARCH_results/")
 
     # Remove unwanted files
     if os.path.exists("./sorted_abundance.txt") == 1:
@@ -187,27 +187,44 @@ def clust_horo(t):
 
     centroids = []
     # num_centroids = int(subprocess.getoutput('ls | grep "cluster" | wc -l')) gotta figure out how to get correct pwd for this
-    num_centroids = open('./USEARCH_results/centroids.txt').read().count('>')
+    num_centroids = open('centroids.txt').read().count('>')
 
     for i in range(num_centroids):
         centroid = next(SeqIO.parse('./USEARCH_results/cluster'+str(i), 'fasta'))
         centroids.append(centroid.seq)             
 
-    for centroid1, centroid2 in combinations(centroids, 2):
+    cluster_num = 0
+ 
+    with open('centroids_sorted.txt', 'w') as f:
+        for item in centroids:
+             f.write(">cluster"+ str(cluster_num) + "\n") 
+             f.write(str(item) + "\n")
+             cluster_num += 1
 
-        sim_score = similarity(str(centroid1), str(centroid2))
+    f.close()
+ 
+    cmd = 'usearch -cluster_fast centroids_sorted.txt -id '+str(t)+' -centroids centroids_clustered.txt'
+    os.system(cmd)
 
-        if sim_score < t:
-            continue
-        else:
-            print("They might be the same\n")
-            i = centroids.index(centroid1)
-            j = centroids.index(centroid2)
+    num_new_centroids = open('centroids_clustered.txt').read().count('>')
+    
+    print("clust_horo found " + str(num_centroids - num_new_centroids) + " homologous clusters!")
+
+    #for centroid1, centroid2 in combinations(centroids, 2):
+
+    #    sim_score = similarity(str(centroid1), str(centroid2))
+
+    #    if sim_score < t:
+    #        continue
+    #    else:
+    #        print("They might be the same\n")
+    #        i = centroids.index(centroid1)
+    #        j = centroids.index(centroid2)
             # do this here: 'I’d keep a list of all the skipped #s to avoid going through the clusters again at the end' 
-            same = cluster_compare(i, j)
+    #        same = cluster_compare(i, j)
 
-            if same == False:
-                print("cluster" + str(i) + ' and cluster' + str(j) + ' should be one cluster')
+    #        if same == False:
+    #            print("cluster" + str(i) + ' and cluster' + str(j) + ' should be one cluster')
                 # cmd = 'cat cluster' + str(i) + ' cluster' + str(j) + ' > cluster' + str(i)
                 # os.system(cmd)
 
@@ -219,8 +236,8 @@ def clust_horo(t):
 
                 # what about finding new centroid and removing old ones?
 
-            else:
-                continue
+    #       else:
+    #           continue
 
 def main():
     
