@@ -204,16 +204,46 @@ def clust_horo(t):
 
     f.close()
  
-    cmd = 'usearch -cluster_fast centroids_sorted.txt -id '+str(t)+' -centroids centroids_clustered.txt'
+    cmd = 'usearch -cluster_fast centroids_sorted.txt -id '+str(t)+' -centroids centroids_clustered.txt -clusters new'
     os.system(cmd)
 
     num_new_centroids = open('centroids_clustered.txt').read().count('>')
     #print(num_new_centroids)    
-    print("clust_horo found " + str(num_centroids - num_new_centroids) + " homologous clusters!")
+    print("clust_horo found " + str(num_centroids - num_new_centroids) + " homologous clusters!\n")
 
     for i in range(num_new_centroids):
-         if (">cluster" + str(i) + '\n') not in open("centroids_clustered.txt").read():
-              print("cluster" + str(i))
+         #if (">cluster" + str(i) + '\n') not in open("centroids_clustered.txt").read():
+         #     print("cluster" + str(i))
+
+         f_out = open("homo_out.txt", "w")
+         filename = "new" + str(i)
+         num_seq = open(filename).read().count('>')
+
+         if(num_seq > 1):
+            cluster = open(filename).read()
+            sequences = SeqIO.parse(filename, 'fasta')
+
+            clusters = []
+            for seq in sequences:
+               clust_name = seq.id
+               clust_num = clust_name.split("cluster")[1]
+               clusters.append(clust_num)
+               f_out.write(seq.id)
+               f_out.write(" ")
+
+            f_out.write("\n")
+   
+    f_out.close()
+
+    os.system("rm new1*")
+    os.system("rm new2*")
+    os.system("rm new3*")
+    os.system("rm new4*")
+    os.system("rm new5*")
+    os.system("rm new6*")
+    os.system("rm new7*")
+    os.system("rm new*")
+
     #for centroid1, centroid2 in combinations(centroids, 2):
 
     #    sim_score = similarity(str(centroid1), str(centroid2))
