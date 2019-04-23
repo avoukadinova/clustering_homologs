@@ -146,7 +146,7 @@ def move_files():
     if os.path.exists("./sorted_abundance.txt") == 1:
         os.system("rm sorted_abundance.txt")
 
-def clust_horo():   
+def clust_horo(t):   
 
     centroids = []
     # num_centroids = int(subprocess.getoutput('ls | grep "cluster" | wc -l')) gotta figure out how to get correct pwd for this
@@ -204,6 +204,8 @@ def clust_horo():
     os.system("rm new6*")
     os.system("rm new7*")
     os.system("rm new*")
+    
+    os.system("rm centroid*")
 
 def main():
     
@@ -231,7 +233,7 @@ def main():
         abundance_and_length(filename_input, t, minseqlen, p)
 
     move_files()
-    clust_horo()
+    clust_horo(t)
 
     # Used as the final time for the clust_horo total run time
     t1 = time.time()
