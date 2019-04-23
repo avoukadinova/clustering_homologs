@@ -6,10 +6,7 @@ import sys
 import subprocess
 import os
 from Bio import SeqIO
-from itertools import combinations
-from Bio import pairwise2
 import time
-from itertools import combinations
 
 # Used as the intitial time for clust_horo run time
 t0 = time.time()
@@ -149,41 +146,7 @@ def move_files():
     if os.path.exists("./sorted_abundance.txt") == 1:
         os.system("rm sorted_abundance.txt")
 
-                 
-def cluster_compare(i, j):
-    cluster1 = []
-    cluster2 = []
-
-    for record in SeqIO.parse("./USEARCH_results/cluster" + str(i), "fasta"):
-        cluster1.append(record.seq)
-
-    for record in SeqIO.parse("./USEARCH_results/cluster" + str(j), "fasta"):
-        cluster2.append(record.seq)
-
-    for sequence1 in cluster1:
-        for sequence2 in cluster2:
-            sim_score = similarity(sequence1, sequence2)          
-            if sim_score >= t:
-                continue
-            else:
-                return False
-
-    return True
-
-# similarity measure using pairwise global alignment (BLAST definition)
-def similarity(seq1, seq2):
-    len1 = len(seq1)
-    len2 = len(seq2)
-    alignments = pairwise2.align.globalxx(seq1, seq2)
-    score = alignments[0][2]
-    columns = len(alignments[0][0])
-
-    return score / columns
-
-def clust_horo(t):
-
-    # if os.path.isdir("./clust_horo/") != 1:
-    #     os.system("mkdir ./clust_horo/")   
+def clust_horo():   
 
     centroids = []
     # num_centroids = int(subprocess.getoutput('ls | grep "cluster" | wc -l')) gotta figure out how to get correct pwd for this
@@ -210,12 +173,10 @@ def clust_horo(t):
     num_new_centroids = open('centroids_clustered.txt').read().count('>')
     #print(num_new_centroids)    
     print("clust_horo found " + str(num_centroids - num_new_centroids) + " homologous clusters!\n")
-
+   
+    f_out = open("homo_out.txt", "w")
     for i in range(num_new_centroids):
-         #if (">cluster" + str(i) + '\n') not in open("centroids_clustered.txt").read():
-         #     print("cluster" + str(i))
 
-         f_out = open("homo_out.txt", "w")
          filename = "new" + str(i)
          num_seq = open(filename).read().count('>')
 
@@ -244,36 +205,6 @@ def clust_horo(t):
     os.system("rm new7*")
     os.system("rm new*")
 
-    #for centroid1, centroid2 in combinations(centroids, 2):
-
-    #    sim_score = similarity(str(centroid1), str(centroid2))
-
-    #    if sim_score < t:
-    #        continue
-    #    else:
-    #        print("They might be the same\n")
-
-    #        i = centroids.index(centroid1)
-    #        j = centroids.index(centroid2)
-            # do this here: 'I’d keep a list of all the skipped #s to avoid going through the clusters again at the end' 
-    #        same = cluster_compare(i, j)
-
-    #        if same == False:
-    #            print("cluster" + str(i) + ' and cluster' + str(j) + ' should be one cluster')
-                # cmd = 'cat cluster' + str(i) + ' cluster' + str(j) + ' > cluster' + str(i)
-                # os.system(cmd)
-
-                # cmd = 'rm cluster' + str(j)
-                # os.system(cmd)
-
-                # cmd = 'mv cluster' + str(len(centroids)) + ' cluster' + str(j)
-                # os.system(cmd)
-
-                # what about finding new centroid and removing old ones?
-
-    #       else:
-    #           continue
-
 def main():
     
     # Get the flags
@@ -300,7 +231,7 @@ def main():
         abundance_and_length(filename_input, t, minseqlen, p)
 
     move_files()
-    clust_horo(t)
+    clust_horo()
 
     # Used as the final time for the clust_horo total run time
     t1 = time.time()
