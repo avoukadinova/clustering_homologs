@@ -13,7 +13,7 @@ with open('homo_out.txt') as handle:
 for line in output:
    cluster1 = './USEARCH_results/' + line[0] 
    for name in line[1:]:
-      if name == ' ':
+      if name == '':
          continue
       else:
          cluster2 = './USEARCH_results/' + name
