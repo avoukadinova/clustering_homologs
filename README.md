@@ -91,4 +91,23 @@ For a list of all the flag parameters, run the following command.
 ./clust_horo.py -h
 ```
 
+## F) Reclustering
+
+Once you run clust_horo, the only output will be the initial clusters made by USEARCH, the centroids text file, and a homo_out.txt file. You, as the user, have two options:
+
+1) Recluster manually
+2) Run reclustering.py
+
+To view the homologous clusters, open the homo_out.txt file. To automatically recluster, download recluster.py, add it to the same directory as clust_horo.py, and run the following command. 
+
+```{r eval=FALSE,echo=TRUE}
+./recluster.py
+```
+or
+
+```{r eval=FALSE,echo=TRUE}
+python3 recluster.py
+```
+
+recluster.py uses the homo_out.txt file to recluster. The output is an updated centroids text file and the accurate clusters in FASTA format.
 
